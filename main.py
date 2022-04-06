@@ -46,9 +46,9 @@ def get_data(url):
     # response = requests.post(url=url, headers=headers, cookies=cookies, data=data, verify=False)
     response = requests.post(url=url, headers=headers, data=data, verify=False)
 
-    # with open(file="Other.html", mode="wb") as file:
-    # # with open("Other.html", "wb") as file:
-    #     file.write(response.content)
+    with open(file="Other.html", mode="wb") as file:
+    # with open("Other.html", "wb") as file:
+        file.write(response.content)
 
     with open("Other.html") as file:
         src = file.read()
