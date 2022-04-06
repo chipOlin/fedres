@@ -47,7 +47,7 @@ def get_data(url):
     response = requests.post(url=url, headers=headers, data=data, verify=False)
 
     # with open(file="Other.html", mode="wb") as file:
-    # with open("Other.html", "wb") as file:
+    # # with open("Other.html", "wb") as file:
     #     file.write(response.content)
 
     with open("Other.html") as file:
@@ -56,24 +56,27 @@ def get_data(url):
     soup = BeautifulSoup(src, "lxml")
     table = soup.find("table", id="ctl00_cphBody_gvMessages")
     tr = table.find_all("tr")
-    tr.pop(0)
+    if len(tr) > 1:
+        tr.pop(0)
 
-    debtor = {}
-    for tr_l in tr:
-        dataline = tr_l.find_all("td")
-        dt = dataline[0].string.strip()
-        link = "https://old.bankrot.fedresurs.ru" + dataline[1].find("a").get("href")
-        name_debt = dataline[2].find("a").string.strip()
-        debtor[dt] = {"link": link, "name": name_debt}
+        debtor = {}
+        for tr_l in tr:
+            dataline = tr_l.find_all("td")
+            dt = dataline[0].string.strip()
+            link = "https://old.bankrot.fedresurs.ru" + dataline[1].find("a").get("href")
+            name_debt = dataline[2].find("a").string.strip()
+            debtor[dt] = {"link": link, "name": name_debt}
 
-    # with open("Other1.html", "w") as file:
-    #     file.write(td)
-    # print(debtor)
+        # with open("Other1.html", "w") as file:
+        #     file.write(td)
+        # print(debtor)
 
-    f_str = "06.04.2022 13:27:55"
-    if f_str in debtor.keys():
-        print(debtor[f_str]["name"])
-        print(debtor[f_str]["link"])
+        f_str = "06.04.2022 13:27:55"
+        if f_str in debtor.keys():
+            print(debtor[f_str]["name"])
+            print(debtor[f_str]["link"])
+    else:
+        print("Нет данных для анализа")
 
 
 
