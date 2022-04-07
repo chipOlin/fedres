@@ -1,22 +1,24 @@
 import requests
 import hashlib
-import lxml
+# import lxml
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+
 def get_data(url):
     d = datetime.strftime(datetime.now(), '%d.%m.%Y')
+    debtor = {}
 
     # "Cookies not using"
-    cookies = {
-        'bankrotcookie': '7dda568a76d6749e6ebeac810eb47996',
-        '_ym_uid': '1649194945877706407',
-        '_ym_d': '1649194945',
-        '_ym_isad': '2',
-        '_ym_visorc': 'w',
-        'ASP.NET_SessionId': 'v4ex33qazk1f0epi5zpntnsk',
-        'Messages': 'MessageNumber=&MessageType=&MessageTypeText=&DateEndValue=06.04.2022+0%3a00%3a00&DateBeginValue=30.03.2022+0%3a00%3a00&PageNumber=0&DebtorText=&DebtorId=&DebtorType=&PublisherType=&PublisherId=&PublisherText=&IdRegion=&IdCourtDecisionType=&WithAu=False&WithViolation=False',
-    }
+    # cookies = {
+    #     'bankrotcookie': '7dda568a76d6749e6ebeac810eb47996',
+    #     '_ym_uid': '1649194945877706407',
+    #     '_ym_d': '1649194945',
+    #     '_ym_isad': '2',
+    #     '_ym_visorc': 'w',
+    #     'ASP.NET_SessionId': 'v4ex33qazk1f0epi5zpntnsk',
+    #     'Messages': 'MessageNumber=&MessageType=&MessageTypeText=&DateEndValue=06.04.2022+0%3a00%3a00&DateBeginValue=30.03.2022+0%3a00%3a00&PageNumber=0&DebtorText=&DebtorId=&DebtorType=&PublisherType=&PublisherId=&PublisherText=&IdRegion=&IdCourtDecisionType=&WithAu=False&WithViolation=False',
+    # }
 
     headers = {
         # 'Host': 'old.bankrot.fedresurs.ru',
@@ -47,19 +49,18 @@ def get_data(url):
     response = requests.post(url=url, headers=headers, data=data, verify=False)
 
     with open(file="Other.html", mode="wb") as file:
-    # with open("Other.html", "wb") as file:
         file.write(response.content)
 
-    with open("Other.html") as file:
+    with open(file="Other.html", mode="rb") as file:
         src = file.read()
 
     soup = BeautifulSoup(src, "lxml")
     table = soup.find("table", id="ctl00_cphBody_gvMessages")
     tr = table.find_all("tr")
+
     if len(tr) > 1:
         tr.pop(0)
 
-        debtor = {}
         for tr_l in tr:
             dataline = tr_l.find_all("td")
             dt = dataline[0].string.strip()
@@ -71,13 +72,16 @@ def get_data(url):
         #     file.write(td)
         # print(debtor)
 
-        f_str = "06.04.2022 13:27:55"
-        if f_str in debtor.keys():
-            print(debtor[f_str]["name"])
-            print(debtor[f_str]["link"])
-    else:
-        print("Нет данных для анализа")
-
+        # f_str = "06.04.2022 13:27:55"
+        # if not f_str in debtor.keys():
+        #         print(debtor[f_str]["name"])
+        #         print(debtor[f_str]["link"])
+        # else:
+        #     print("Нет данных для анализа")
+    
+    if len(debtor) > 0:
+        for x, y in debtor.items():
+            print(f"{x}: {y['name']} - {y['link']}")
 
 
 def get_date():
@@ -128,17 +132,16 @@ def get_service_api():
     # https://services.fedresurs.ru/SignificantEvents/MessagesServiceDemo2/
 
     password = 'Ax!761BN'
-    t_sha = hashlib.sha512()
-    t_sha.update(password)
+    # t_sha = hashlib.sha512()
+    # t_sha.update(password)
     data = {
         'login': 'demo',
         # 'passwordHash': t_sha
-        'passwordHash': 
-        "D76628160E1642FCB5E855A02BA7674FF8D4AEAB52A43C69AD20CC9CF936B3DB4F926E4800AD28B4B70054BFAD476516AEFF5BB8CF0A331B19E1C532113F3BD8",
+        'passwordHash': "D76628160E1642FCB5E855A02BA7674FF8D4AEAB52A43C69AD20CC9CF936B3DB4F926E4800AD28B4B70054BFAD476516AEFF5BB8CF0A331B19E1C532113F3BD8",
     }
 
-    headers={
-        'Content-type':'application/json', 
+    headers = {
+        'Content-type': 'application/json',
     }
 
     response = requests.post('https://services.fedresurs.ru/SignificantEvents/MessagesServiceDemo2/v1/auth', headers=headers, data=data)
