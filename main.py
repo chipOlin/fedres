@@ -1,6 +1,6 @@
 import requests
 import hashlib
-# import lxml
+import lxml
 from datetime import datetime
 from bs4 import BeautifulSoup
 
@@ -51,13 +51,12 @@ def get_data(url):
     with open(file="Other.html", mode="wb") as file:
         file.write(response.content)
 
-    with open(file="Other.html", mode="rb") as file:
+    with open("Other.html", mode="rb") as file:
         src = file.read()
 
     soup = BeautifulSoup(src, "lxml")
     table = soup.find("table", id="ctl00_cphBody_gvMessages")
     tr = table.find_all("tr")
-
     if len(tr) > 1:
         tr.pop(0)
 
@@ -72,13 +71,13 @@ def get_data(url):
         #     file.write(td)
         # print(debtor)
 
-        # f_str = "06.04.2022 13:27:55"
-        # if not f_str in debtor.keys():
-        #         print(debtor[f_str]["name"])
-        #         print(debtor[f_str]["link"])
-        # else:
-        #     print("Нет данных для анализа")
-    
+    # f_str = "06.04.2022 13:27:55"
+    # if f_str in debtor.keys():
+    #     print(debtor[f_str]["name"])
+    #     print(debtor[f_str]["link"])
+    # else:
+    #     print("Нет данных для анализа")
+
     if len(debtor) > 0:
         for x, y in debtor.items():
             print(f"{x}: {y['name']} - {y['link']}")
