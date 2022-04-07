@@ -1,3 +1,5 @@
+import json
+import urllib3
 import requests
 import hashlib
 import lxml
@@ -5,9 +7,11 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 
 
-def get_data(url):
+urllib3.disable_warnings()
+
+
+def get_data(url="https://old.bankrot.fedresurs.ru/Messages.aspx"):
     d = datetime.strftime(datetime.now(), '%d.%m.%Y')
-    debtor = {}
 
     # "Cookies not using"
     # cookies = {
@@ -47,16 +51,18 @@ def get_data(url):
 
     # response = requests.post(url=url, headers=headers, cookies=cookies, data=data, verify=False)
     response = requests.post(url=url, headers=headers, data=data, verify=False)
+    #
+    # with open(file="Other.html", mode="wb") as file:
+    #     file.write(response.content)
 
-    with open(file="Other.html", mode="wb") as file:
-        file.write(response.content)
+    # with open("Other.html", mode="rb") as file:
+    #     src = file.read()
 
-    with open("Other.html", mode="rb") as file:
-        src = file.read()
-
-    soup = BeautifulSoup(src, "lxml")
+    # soup = BeautifulSoup(src, "lxml")
+    soup = BeautifulSoup(response.content, "lxml")
     table = soup.find("table", id="ctl00_cphBody_gvMessages")
     tr = table.find_all("tr")
+    debtor = {}
     if len(tr) > 1:
         tr.pop(0)
 
@@ -65,8 +71,13 @@ def get_data(url):
             dt = dataline[0].string.strip()
             link = "https://old.bankrot.fedresurs.ru" + dataline[1].find("a").get("href")
             name_debt = dataline[2].find("a").string.strip()
-            debtor[dt] = {"link": link, "name": name_debt}
-
+            if not dt in debtor.keys():
+                debtor[dt] = {"link": link, "name": name_debt}
+        return debtor
+    else:
+        return None
+        # with open("d.json", "w") as file:
+        #     json.dump(debtor, file, indent=4, ensure_ascii=False)
         # with open("Other1.html", "w") as file:
         #     file.write(td)
         # print(debtor)
@@ -78,9 +89,11 @@ def get_data(url):
     # else:
     #     print("Нет данных для анализа")
 
-    if len(debtor) > 0:
-        for x, y in debtor.items():
-            print(f"{x}: {y['name']} - {y['link']}")
+    # if len(debtor) > 0:
+    #     for x, y in debtor.items():
+    #         if not y['sh']:
+    #             print(f"{x}: {y['name']} - {y['link']}")
+    #             y['sh'] = True
 
 
 def get_date():
@@ -121,7 +134,8 @@ def get_data_json():
         'offset': '0',
     }
 
-    response = requests.get('https://bankrot.fedresurs.ru/backend/prsnbankrupts', headers=headers, params=params, cookies=cookies)
+    response = requests.get('https://bankrot.fedresurs.ru/backend/prsnbankrupts', headers=headers, params=params,
+                            cookies=cookies)
 
     with open("Other.json", "wb") as file:
         file.write(response.content)
@@ -143,7 +157,8 @@ def get_service_api():
         'Content-type': 'application/json',
     }
 
-    response = requests.post('https://services.fedresurs.ru/SignificantEvents/MessagesServiceDemo2/v1/auth', headers=headers, data=data)
+    response = requests.post('https://services.fedresurs.ru/SignificantEvents/MessagesServiceDemo2/v1/auth',
+                             headers=headers, data=data)
 
     print(response.status_code)
     print(response.raise_for_status())

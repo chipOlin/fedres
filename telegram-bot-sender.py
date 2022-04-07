@@ -3,10 +3,12 @@ import time
 import datetime
 from multiprocessing import *
 import schedule
+import main
 
 # telebot.apihelper.proxy = {'PROXY'}
 API_TOKEN = '1876044724:AAF2JMbTu5QsbBY40qbytjqZSL8wwlR0zMw'
 bot = telebot.TeleBot(API_TOKEN)
+debtor_dict = {}
 
 
 def start_process():  # Запуск Process
@@ -29,8 +31,15 @@ class P_schedule():  # Class для работы с schedule
         bot.send_message(USER_ID, 'Отправка сообщения по времени')
 
     def send_message2():
-        # bot.send_message(1915793473, 'Отправка сообщения через определенное время')
-        bot.send_message(256155479, 'Отправка сообщения через определенное время')
+        ldebt = main.get_data()
+        if len(ldebt) > 0:
+            for x, y in ldebt.items():
+                if not x in debtor_dict:
+                    bot.send_message(1915793473, f'{y["name"]}: {y["link"]}')
+                    debtor_dict[x] = ldebt[x]
+        print(time.strftime('%c'))
+        # bot.send_message(1915793473, f'строк: {len(debtor_dict)}')
+        # bot.send_message(256155479, 'Отправка сообщения через определенное время')
     ################
 
 
@@ -40,8 +49,6 @@ def start(message):
     bot.send_message(message.chat.id, 'Нажали start')
     # bot.send_message(message.chat.id, print(message))
     # print(message)
-
-
 #####################
 
 
