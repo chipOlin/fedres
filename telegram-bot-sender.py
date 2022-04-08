@@ -35,7 +35,8 @@ class P_schedule():  # Class для работы с schedule
         if len(ldebt) > 0:
             for x, y in ldebt.items():
                 if not x in debtor_dict:
-                    bot.send_message(1915793473, f'{y["name"]}: {y["link"]}')
+                    mes = "\n".join(y.values())
+                    bot.send_message(256155479, f'{x}\n{mes}')
                     debtor_dict[x] = ldebt[x]
         print(time.strftime('%c'))
         # bot.send_message(1915793473, f'строк: {len(debtor_dict)}')
