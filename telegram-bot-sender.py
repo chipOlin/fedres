@@ -39,8 +39,8 @@ class P_schedule():  # Class для работы с schedule
                     bot.send_message(256155479, f'{x}\n{mes}')
                     debtor_dict[x] = ldebt[x]
         print(time.strftime('%c'))
-        # bot.send_message(1915793473, f'строк: {len(debtor_dict)}')
-        # bot.send_message(256155479, 'Отправка сообщения через определенное время')
+        # 1915793473 - id резервный
+        # 256155479 - id_2 основной
     ################
 
 
