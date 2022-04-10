@@ -32,7 +32,7 @@ class P_schedule():  # Class для работы с schedule
 
     def send_message2():
         ldebt = main.get_data()
-        if len(ldebt) > 0:
+        if ldebt and len(ldebt) > 0:
             for x, y in ldebt.items():
                 if not x in debtor_dict:
                     mes = "\n".join(y.values())
