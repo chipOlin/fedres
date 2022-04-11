@@ -9,7 +9,7 @@ def get_html(url):
         "accept": "* / *"
     }
 
-    r = requests.get(url, headers=headers, timeout=0.3)
+    r = requests.get(url, headers=headers)
     # with open("sale_notebook.html", "wb") as f:
     #     f.write(r.content)
 
@@ -21,7 +21,7 @@ def get_html(url):
     soup = BeautifulSoup(r.content, "lxml")
     table = soup.find("table", class_="goods-list-grouped-table")
     tr = table.findAll("tr", class_="goods-list-header")
-    for item in tr[:2]:
+    for item in tr:
         name = item.find("h3").find("span").text.strip()
         link = "https://www.notik.ru" + item.findNext("tr").find("div").findNext("div").find("a").get("href")
         price = item.findNext("tr").findNext("tr").find("td", class_="gltc-cart").find("a").get("ecprice")
@@ -42,7 +42,7 @@ def get_html(url):
 
 
 def main():
-    # get_html("https://www.notik.ru/search_catalog/filter/sales.htm?sortby=price") - all models
+    # get_html("https://www.notik.ru/search_catalog/filter/sales.htm?sortby=price") # - all models
     get_html("https://www.notik.ru/search_catalog/filter/sales.htm?srch=true&full=&f28=19293&sortby=price") # - HP models
 
 
