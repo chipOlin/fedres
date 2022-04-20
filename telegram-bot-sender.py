@@ -4,9 +4,10 @@ import datetime
 from multiprocessing import *
 import schedule
 import main
+import os
 
 # telebot.apihelper.proxy = {'PROXY'}
-API_TOKEN = '1876044724:AAF2JMbTu5QsbBY40qbytjqZSL8wwlR0zMw'
+API_TOKEN = os.environ['TOKEN_TGBOT']
 bot = telebot.TeleBot(API_TOKEN)
 debtor_dict = {}
 
